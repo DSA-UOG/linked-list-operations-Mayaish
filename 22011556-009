@@ -1,0 +1,265 @@
+1. A C++ program to insert value at beginning,end and at any n position in linked list.
+#include<iostream>
+using namespace std;
+// A Node class to represent a node in linked list
+class Node {
+public:
+   int value;
+   Node* next;
+};
+// A LinkedList class to represent linked list
+class LinkedList {
+private:
+   Node* head; //a pointer to a Node object(hold memory address of 1st node)
+public:
+//constructor that initialize head pointer to NULL(linked list is initially empty)
+   LinkedList() : head(NULL) {} //
+ 
+   // Insert a new node at beginning of linked list
+   void insertAtBeginning(int value)
+{
+Node* newNode = new Node(); //create new node in memory with keyword 'new'
+newNode->value = value; //newNode's value is set to 'value' of function parameter
+newNode->next = head; // 'next' pointer of newNode is set to head
+head = newNode; //update head to new node.
+   }
+   // Insert a new node at end of  linked list
+   void insertAtEnd(int value)
+{
+ Node* newNode = new Node();
+newNode->value = value;
+newNode->next = NULL;
+if(head == NULL) // if linked list is empty
+{
+head = newNode; //set head to new node.
+   }
+   else // if not, this block will execute
+​{
+Node* current = head; //create pointer variable(current) + set it to point to head
+while(current->next!=NULL) //loop continues until next pointer of current node is not NULL
+{
+current = current->next; //update 'current' pointer to point to next node  
+}
+current->next = newNode; //'next' pointer of current is set to point to newNode
+   }
+}
+   // Insert a new node at a specified position n in linked list
+   void insertAtN(int value, int n)
+​{
+Node* newNode = new Node(); //
+newNode->value = value;
+newNode->next = NULL;
+if(head == NULL)
+{
+head = newNode;
+return; //exit function
+}
+Node* temp = head; //create pointer variable(temp) + set it to point to head
+int i = 0; //to keep track of current position in linked list.
+while(temp != NULL && i < n-1)
+{
+temp = temp->next; //update 'temp' pointer to next node
+i++; //increment position(i) by 1
+}
+newNode->next = temp->next; // next pointer of new node is set to point to temp(next)
+temp->next = newNode; // temp(next) is set to point to newNode
+   }
+   // Display linked list
+   void display() {
+Node* temp = head; //Initialize a pointer to head
+while(temp != NULL) // continue until  temp reaches end (NULL)
+{
+cout << temp->value << " "; //Print value that temp is pointing to
+temp = temp->next; //update temp to next node
+}
+cout << endl;
+   }
+};
+ 
+int main() {
+​LinkedList list;
+   list.insertAtBeginning(5);
+   list.insertAtBeginning(4);
+   list.insertAtBeginning(3);
+   cout<<"inserting in beginning: ";
+   list.display();
+​cout<<endl;
+​list.insertAtEnd(1);
+​cout<<"inserting at end : ";
+​list.display();
+​cout<<endl;
+   list.insertAtN(2, 2);
+   cout<<"inserting at 2nd(n) position: ";
+   list.display();
+   return 0;
+}
+2. A C++ program to search values and update them in linked list.
+#include<iostream>
+using namespace std;
+struct Node {
+   int value;
+   Node* next;
+};
+class LinkedList {
+private:
+   Node* head;
+public:
+   LinkedList() : head(NULL) {}
+ 
+   void insert(int value) {
+       Node* newNode = new Node();
+       newNode->value = value;
+       newNode->next = head;
+       head = newNode;
+   }
+   bool search(int value) {
+       Node* current = head;
+       while(current != NULL) {
+           if(current->value == value) {
+               return current; // return the found node
+           }
+           current = current->next;
+       }
+       return NULL; // return NULL if no node is found
+   }
+   // Function to update data of a node in linked list
+   void update(int old_value, int new_value) {
+       Node* current = head;
+ 
+       while(current != NULL) {
+           if(current->value == old_value) {
+               current->value = new_value;
+               return;
+           }
+           current = current->next;
+       }
+ 
+       cout << "Node with data " << old_value << " not found in the linked list.\n";
+   }
+// Function to display linked list
+   void display() {
+       Node* current = head;
+       while(current != NULL) {
+           cout << current->value << " ";
+           current = current->next;
+       }
+       cout << endl;
+   }
+};
+int main() {
+​Node* head = NULL;
+   LinkedList list;
+   list.insert(10);
+   list.insert(20);
+   list.insert(30);
+   list.insert(40);
+   list.insert(50);
+cout<<boolalpha; // to print as true or false
+  cout<<"searching for 20: "<<list.search(20) <<endl;
+   cout<<"searching for 7: "<<list.search(7) <<endl;
+   // Update data of node 30 to 35
+   list.update(30, 35);
+   cout<<"updated list is: "<<endl;
+   list.display();
+​    return 0;
+}
+3. A C++ program to delete value at beginning, end and at any n position in linked list.
+ 
+#include<iostream>
+using namespace std;
+struct Node {
+   int value;
+   Node* next;
+};
+class LinkedList {
+private:
+   Node* head;
+public:
+   LinkedList() : head(NULL) {}
+/* using a double pointer (Node** head) to modify original head pointer.
+In push function, we dereference head pointer to access current head node and then update head pointer to point to new node, if use single pointer (Node* head), original head pointer will not be affected */
+void push(Node** head, int value)           // insert a new node at beginning
+{
+/* head is a pointer to a pointer i.e; we want to modify original pointer when we insert a new node. so, we pass a pointer to head pointer to push function (to modify the original head pointer.)*/
+   Node* newNode = new Node();
+   newNode->value = value;
+   newNode->next = (*head);
+   (*head) = newNode;
+}
+//delete node at beginning
+void deleteAtBeginning(Node** head) {
+   Node* temp = *head;
+   *head = temp->next;
+   delete temp;
+}
+//delete node at end
+void deleteAtEnd(Node** head) {
+   Node* temp = *head;
+   Node* prev = NULL;
+   if (temp == NULL)
+       return;
+   while (temp->next != NULL) {
+       prev = temp;
+       temp = temp->next;
+   }
+   if (prev != NULL)
+       prev->next = NULL;
+   else
+       *head = NULL;
+   delete temp;
+}
+// delete node from any n position
+void deleteNode(Node **head, int position) {
+   if (*head == NULL)
+       return;
+   Node* temp = *head;
+if (position == 0)            //checks if node to be deleted is head
+​ {
+       *head = temp->next;
+       delete temp;      //removing head node
+       return;
+   }
+//loop iterates through linked list to find node before node that we want to delete.
+for(int i=0; temp!=NULL && i<position-1; i++)
+       temp = temp->next;
+/*check if node before node we want to delete does not exist or if node we want to delete does not exist*/
+   if (temp == NULL || temp->next == NULL) //if true, then can't del
+       return;
+/* find next node of node we want to delete, skipping over the node we want to delete*/
+Node *next = temp->next->next;
+delete temp->next;       //delete memory occupied by node we want to delete
+/*reassign next pointer of current node(temp) to point to next node(next) allow current node to be removed by updating pointers of its neighboring nodes.*/
+temp->next = next;
+}
+void display(Node* node) {
+   while (node != NULL) {
+       cout << node->value << " ";
+       node = node->next;
+   }
+}
+};
+int main() {
+​LinkedList list;
+   Node* head = NULL;
+   list.push(&head, 20);      //call by reference method here, adding value to front
+   list.push(&head, 30);
+   list.push(&head, 40);
+   list.push(&head, 50);
+   list.push(&head, 60);
+   cout << "Created Linked List: ";
+   list.display(head);
+   cout << endl;
+   list.deleteAtBeginning(&head);     //deleting node at beginning
+cout << "Modified Linked List: ";
+   list.display(head);
+   cout << endl;
+   list.deleteNode(&head, 3);        //deleting node at 3rd position
+   cout << "Modified Linked List: ";
+   list.display(head);
+   cout << endl;
+   list.deleteAtEnd(&head);         //deleting node at end
+   cout << "Modified Linked List: ";
+   list.display(head);
+   cout << endl;
+   return 0;
+}
